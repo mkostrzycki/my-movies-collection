@@ -1,0 +1,17 @@
+{% extends '::base.html.twig' %}
+
+{% block body %}
+
+    <ul>
+        {% for role in roles %}
+            <li>
+                <a href="#">{{ role.name }}</a>
+            </li>
+        {% else %}
+            <p>No role found</p>
+        {% endfor %}
+    </ul>
+
+    <a href="{{ path('app_role_new') }}">Add new role</a>
+
+{% endblock %}

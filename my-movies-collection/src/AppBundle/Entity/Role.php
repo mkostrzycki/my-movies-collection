@@ -2,6 +2,7 @@
 
 namespace AppBundle\Entity;
 
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -28,6 +29,20 @@ class Role
      */
     private $name;
 
+    /**
+     * @ORM\OneToMany(targetEntity="AppBundle\Entity\MovieCastRole", mappedBy="role")
+     * @ORM\JoinTable(name="movieCastRoles")
+     */
+    private $movieCastRoles;
+
+
+    /**
+     * Constructor
+     */
+    public function __construct()
+    {
+        $this->movieCastRoles = new ArrayCollection();
+    }
 
     /**
      * Get id
@@ -60,5 +75,38 @@ class Role
     public function getName()
     {
         return $this->name;
+    }
+
+    /**
+     * Add movieCastRoles
+     *
+     * @param MovieCastRole $movieCastRoles
+     * @return Role
+     */
+    public function addMovieCastRole(MovieCastRole $movieCastRoles)
+    {
+        $this->movieCastRoles[] = $movieCastRoles;
+
+        return $this;
+    }
+
+    /**
+     * Remove movieCastRoles
+     *
+     * @param MovieCastRole $movieCastRoles
+     */
+    public function removeMovieCastRole(MovieCastRole $movieCastRoles)
+    {
+        $this->movieCastRoles->removeElement($movieCastRoles);
+    }
+
+    /**
+     * Get movieCastRoles
+     *
+     * @return \Doctrine\Common\Collections\Collection 
+     */
+    public function getMovieCastRoles()
+    {
+        return $this->movieCastRoles;
     }
 }

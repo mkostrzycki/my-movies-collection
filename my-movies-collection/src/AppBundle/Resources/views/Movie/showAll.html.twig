@@ -1,0 +1,15 @@
+{% extends '::base.html.twig' %}
+
+{% block body %}
+
+    <ul>
+        {% for movie in movies %}
+            <li>
+                <a href="{{ path('app_movie_show', {'movieId': movie.id}) }}">{{ movie.title }} ({{ movie.yearOfProduction }})</a>
+            </li>
+        {% else %}
+            <p>No movie found</p>
+        {% endfor %}
+    </ul>
+
+{% endblock %}
