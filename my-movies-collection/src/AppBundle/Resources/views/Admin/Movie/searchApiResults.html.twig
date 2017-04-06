@@ -1,0 +1,41 @@
+{% extends '::adminBase.html.twig' %}
+
+{% block body %}
+
+    <p><a href="{{ path('app_adminmovie_apititlesearch') }}"><< back to search page</a></p>
+
+    {% if decodedJson != '' %}
+
+        <h5>Search results for "{{ decodedSearchPhrase|default('') }}" (total
+            results: {{ decodedJson.totalResults|default('0') }}
+            ):</h5>
+
+        <div class="movie-tiles">
+            {% for movie in decodedJson.Search %}
+                <div class="movie-tile">
+
+                    {% if movie.Poster != 'N/A' %}
+                        <img src="{{ movie.Poster }}"/>
+                    {% else %}
+                        <p>no poster<br>:(</p>
+                    {% endif %}
+
+                    <p>
+                        <a href="{{ path('app_adminmovie_apititlesearchresult', {'imdbId': movie.imdbID}) }}">{{ movie.Title }} ({{ movie.Year }})</a>
+                    </p>
+                </div>
+            {% else %}
+                <p>No search results</p>
+            {% endfor %}
+        </div>
+
+        {% for page in 1..pages %}
+            <a href="{{ path('app_adminmovie_apititlesearchresults', {'searchPhrase': encodedSearchPhrase, 'pageNumber': page}) }}">{{ page }}</a>
+        {% endfor %}
+        <p>from {{ pages|default('0') }}</p>
+
+    {% else %}
+        <p>No movie found</p>
+    {% endif %}
+
+{% endblock %}

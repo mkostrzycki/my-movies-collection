@@ -77,3 +77,15 @@ vich_uploader:
                 inject_on_load:     false
                 delete_on_update:   true
                 delete_on_remove:   true
+
+guzzle:
+    # (de)activate logging/profiler; default: %kernel.debug%
+    logging: true
+
+    clients:
+        api_omdb:
+            base_url: "http://www.omdbapi.com/"
+            headers:
+                Accept: "application/json"
+            options:
+                timeout:  30

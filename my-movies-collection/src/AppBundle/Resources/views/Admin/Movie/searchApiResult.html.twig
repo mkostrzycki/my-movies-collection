@@ -1,0 +1,42 @@
+{% extends '::adminBase.html.twig' %}
+
+{% block body %}
+
+    <p><a href="{{ path('app_adminmovie_apititlesearch') }}"><< back to search page</a></p>
+
+    {% if movie != '' %}
+
+        <h5>Search result for "{{ movie.Title|default('') }}":</h5>
+
+        <div class="movie-tile">
+
+            {% if movie.Poster != 'N/A' %}
+                <img src="{{ movie.Poster }}"/>
+            {% else %}
+                <p>no poster<br>:(</p>
+            {% endif %}
+
+        </div>
+
+        <p>{{ movie.Title }} ({{ movie.Year }})</p>
+        <p>Rated: {{ movie.Rated }}</p>
+        <p>Released: {{ movie.Released }}</p>
+        <p>Runtime: {{ movie.Runtime }}</p>
+        <p>Genre: {{ movie.Genre }}</p>
+        <p>Director: {{ movie.Director }}</p>
+        <p>Writer: {{ movie.Writer }}</p>
+        <p>Actors: {{ movie.Actors }}</p>
+        <p>Plot: {{ movie.Plot }}</p>
+        <p>Language: {{ movie.Language }}</p>
+        <p>Country: {{ movie.Country }}</p>
+        <p>Awards: {{ movie.Awards }}</p>
+        <p>IMDB Rating: {{ movie.imdbRating }}</p>
+        <p>IMDB Votes: {{ movie.imdbVotes }}</p>
+        <p>IMDB ID: {{ movie.imdbID }}</p>
+        <p>Production: {{ movie.Production }}</p>
+
+    {% else %}
+        <p>No movie found</p>
+    {% endif %}
+
+{% endblock %}
