@@ -1,0 +1,28 @@
+{% extends '::adminBase.html.twig' %}
+
+{% block body %}
+
+    {{ movie.title }} ({{ movie.yearOfProduction }})
+
+    <h5>CAST:</h5>
+
+    <p>Add cast to movie:</p>
+    <form action="" method="POST">
+        <label>Select cast:
+            <select name="castId">
+                {% for cast in entireCast %}
+                <option value="{{ cast.id }}">{{ cast.fullName }}</option>
+                {% endfor %}
+            </select>
+        </label>
+        <label>Select role:
+            <select name="roleId">
+                {% for role in roles %}
+                <option value="{{ role.id }}">{{ role.name }}</option>
+                {% endfor %}
+            </select>
+        </label>
+        <input type="submit" value="Add to movie">
+    </form>
+
+{% endblock %}

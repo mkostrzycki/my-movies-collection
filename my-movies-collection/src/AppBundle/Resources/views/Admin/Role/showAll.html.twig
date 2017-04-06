@@ -1,4 +1,4 @@
-{% extends '::base.html.twig' %}
+{% extends '::adminBase.html.twig' %}
 
 {% block body %}
 
@@ -12,6 +12,6 @@
         {% endfor %}
     </ul>
 
-    <a href="{{ path('app_role_new') }}">Add new role</a>
+    <a href="{{ path('app_adminrole_new') }}">Add new role</a>
 
 {% endblock %}

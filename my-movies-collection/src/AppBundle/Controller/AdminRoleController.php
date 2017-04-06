@@ -9,13 +9,13 @@ use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
 
 /**
- * @Route("/role")
+ * @Route("/admin/role")
  */
-class RoleController extends Controller
+class AdminRoleController extends Controller
 {
     /**
      * @Route("/new")
-     * @Template("AppBundle:Role:new.html.twig")
+     * @Template("AppBundle:Admin/Role:new.html.twig")
      * @param Request $request
      * @return array|\Symfony\Component\HttpFoundation\RedirectResponse
      */
@@ -36,7 +36,7 @@ class RoleController extends Controller
             $em->persist($role);
             $em->flush();
 
-            return $this->redirectToRoute('app_role_showall');
+            return $this->redirectToRoute('app_adminrole_showall');
         }
 
         return [
@@ -46,7 +46,7 @@ class RoleController extends Controller
 
     /**
      * @Route("/")
-     * @Template("AppBundle:Role:showAll.html.twig")
+     * @Template("AppBundle:Admin/Role:showAll.html.twig")
      * @return array
      */
     public function showAllAction()

@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8" />
+        <title>{% block title %}Welcome!{% endblock %}</title>
+        {% block stylesheets %}{% endblock %}
+        <link rel="icon" type="image/x-icon" href="{{ asset('favicon.ico') }}" />
+    </head>
+    <body>
+
+        <nav>
+            <a href="{{ path('app_movie_showgrid') }}">go to page</a>
+             |
+            <a href="{{ path('app_adminmovie_showall') }}">Show movies</a>
+             |
+            <a href="{{ path('app_adminmovie_new') }}">Add movie</a>
+             |
+            <a href="{{ path('app_admincast_showall') }}">Show cast</a>
+             |
+            <a href="{{ path('app_admincast_new') }}">Add cast</a>
+             |
+            <a href="{{ path('app_adminrole_showall') }}">Show roles</a>
+        </nav>
+
+        <hr>
+
+        {% block body %}{% endblock %}
+        {% block javascripts %}{% endblock %}
+    </body>
+</html>

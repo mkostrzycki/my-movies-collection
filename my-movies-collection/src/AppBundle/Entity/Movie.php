@@ -42,6 +42,11 @@ class Movie
      */
     private $movieCastRoles;
 
+    /**
+     * @ORM\OneToMany(targetEntity="AppBundle\Entity\Poster", mappedBy="movie")
+     */
+    private $posters;
+
 
     /**
      * Constructor
@@ -49,6 +54,7 @@ class Movie
     public function __construct()
     {
         $this->movieCastRoles = new ArrayCollection();
+        $this->posters = new ArrayCollection();
     }
 
     /**
@@ -120,12 +126,12 @@ class Movie
     /**
      * Add movieCastRoles
      *
-     * @param MovieCastRole $movieCastRoles
+     * @param MovieCastRole $movieCastRole
      * @return Movie
      */
-    public function addMovieCastRole(MovieCastRole $movieCastRoles)
+    public function addMovieCastRole(MovieCastRole $movieCastRole)
     {
-        $this->movieCastRoles[] = $movieCastRoles;
+        $this->movieCastRoles[] = $movieCastRole;
 
         return $this;
     }
@@ -133,11 +139,11 @@ class Movie
     /**
      * Remove movieCastRoles
      *
-     * @param MovieCastRole $movieCastRoles
+     * @param MovieCastRole $movieCastRole
      */
-    public function removeMovieCastRole(MovieCastRole $movieCastRoles)
+    public function removeMovieCastRole(MovieCastRole $movieCastRole)
     {
-        $this->movieCastRoles->removeElement($movieCastRoles);
+        $this->movieCastRoles->removeElement($movieCastRole);
     }
 
     /**
@@ -148,5 +154,38 @@ class Movie
     public function getMovieCastRoles()
     {
         return $this->movieCastRoles;
+    }
+
+    /**
+     * Add poster
+     *
+     * @param Poster $poster
+     * @return Movie
+     */
+    public function addPoster(Poster $poster)
+    {
+        $this->posters[] = $poster;
+
+        return $this;
+    }
+
+    /**
+     * Remove poster
+     *
+     * @param Poster $poster
+     */
+    public function removePoster(Poster $poster)
+    {
+        $this->posters->removeElement($poster);
+    }
+
+    /**
+     * Get posters
+     *
+     * @return \Doctrine\Common\Collections\Collection 
+     */
+    public function getPosters()
+    {
+        return $this->posters;
     }
 }

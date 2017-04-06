@@ -1,6 +1,8 @@
-{% extends '::base.html.twig' %}
+{% extends '::adminBase.html.twig' %}
 
 {% block body %}
+
+    <h3>Add poster for movie: {{ movie.title }} ({{ movie.yearOfProduction }})</h3>
 
     {{ form_start(form) }}
     {{ form_widget(form) }}

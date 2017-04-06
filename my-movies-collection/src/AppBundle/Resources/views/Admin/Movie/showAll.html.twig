@@ -1,11 +1,11 @@
-{% extends '::base.html.twig' %}
+{% extends '::adminBase.html.twig' %}
 
 {% block body %}
 
     <ul>
         {% for movie in movies %}
             <li>
-                <a href="{{ path('app_movie_show', {'movieId': movie.id}) }}">{{ movie.title }} ({{ movie.yearOfProduction }})</a>
+                <a href="{{ path('app_adminmovie_show', {'movieId': movie.id}) }}">{{ movie.title }} ({{ movie.yearOfProduction }})</a>
             </li>
         {% else %}
             <p>No movie found</p>

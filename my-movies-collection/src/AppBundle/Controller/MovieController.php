@@ -2,13 +2,9 @@
 
 namespace AppBundle\Controller;
 
-use AppBundle\Entity\Movie;
-use AppBundle\Entity\MovieCastRole;
-use AppBundle\Entity\Role;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
-use Symfony\Component\HttpFoundation\Request;
 
 /**
  * @Route("/movie")
@@ -16,63 +12,11 @@ use Symfony\Component\HttpFoundation\Request;
 class MovieController extends Controller
 {
     /**
-     * @Route("/new")
-     * @Template("AppBundle:Movie:new.html.twig")
-     * @param Request $request
-     * @return array|\Symfony\Component\HttpFoundation\RedirectResponse
-     */
-    public function newAction(Request $request)
-    {
-        $movie = new Movie();
-
-        $form = $this->createForm('AppBundle\Form\MovieType', $movie);
-
-        $form->handleRequest($request);
-
-        if ($form->isSubmitted() && $form->isValid()) {
-
-            $em = $this
-                ->getDoctrine()
-                ->getManager();
-
-            $em->persist($movie);
-            $em->flush();
-
-            return $this->redirectToRoute('app_movie_showall');
-        }
-
-        return [
-            'form' => $form->createView()
-        ];
-    }
-
-    /**
-     * @Route("/{movieId}")
-     * @Template("AppBundle:Movie:show.html.twig")
-     * @param $movieId
+     * @Route("/grid")
+     * @Template("AppBundle:Movie:showGrid.html.twig")
      * @return array
      */
-    public function showAction($movieId)
-    {
-        $movie = $this
-            ->getDoctrine()
-            ->getRepository('AppBundle:Movie')->find($movieId);
-
-        if (!$movie) {
-            throw $this->createNotFoundException('No movie found');
-        }
-
-        return [
-            'movie' => $movie
-        ];
-    }
-
-    /**
-     * @Route("/")
-     * @Template("AppBundle:Movie:showAll.html.twig")
-     * @return array
-     */
-    public function showAllAction()
+    public function showGridAction()
     {
         $movies = $this
             ->getDoctrine()
@@ -83,61 +27,5 @@ class MovieController extends Controller
         ];
     }
 
-    /**
-     * @Route("/{movieId}/addCastAsRole")
-     * @Template("AppBundle:Movie:addCastAsRole.html.twig")
-     * @param Request $request
-     * @param $movieId
-     * @return array|\Symfony\Component\HttpFoundation\RedirectResponse
-     */
-    public function addCastAsRoleAction(Request $request, $movieId)
-    {
-        $movie = $this
-            ->getDoctrine()
-            ->getRepository('AppBundle:Movie')->find($movieId);
 
-        $entireCast = $this
-            ->getDoctrine()
-            ->getRepository('AppBundle:Cast')->findAll();
-
-        $roles = $this
-            ->getDoctrine()
-            ->getRepository('AppBundle:Role')->findAll();
-
-        if ($request->getMethod() === 'POST') {
-
-            $cast = $this
-                ->getDoctrine()
-                ->getRepository('AppBundle:Cast')->find($request->request->get('castId'));
-
-            $role = $this
-                ->getDoctrine()
-                ->getRepository('AppBundle:Role')->find($request->request->get('roleId'));
-
-            $movieCastRole = new MovieCastRole();
-
-            $movieCastRole->setMovie($movie);
-            $movieCastRole->setCast($cast);
-            $movieCastRole->setRole($role);
-
-            $movie->addMovieCastRole($movieCastRole);
-            $cast->addMovieCastRole($movieCastRole);
-            $role->addMovieCastRole($movieCastRole);
-
-            $em = $this
-                ->getDoctrine()
-                ->getManager();
-
-            $em->persist($movieCastRole);
-            $em->flush();
-
-            return $this->redirectToRoute('app_movie_show', ['movieId' => $movieId]);
-        }
-
-        return [
-            'movie' => $movie,
-            'entireCast' => $entireCast,
-            'roles' => $roles
-        ];
-    }
 }

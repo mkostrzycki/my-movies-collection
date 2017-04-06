@@ -1,0 +1,21 @@
+{% extends '::base.html.twig' %}
+
+{% block body %}
+
+    <div class="container">
+        {% for movie in movies %}
+            <div style="width: 20%; height: auto; margin: 5px 5px 0 5px">
+                <a href="#">
+                    {% for poster in movie.posters %}
+                        <img src="{{ vich_uploader_asset(poster, 'file') }}" alt="{{ movie.title }} poster"
+                             style="max-width: 100%; height: auto; border: 1px solid #ddd;  border-radius: 4px; padding: 5px;"/>
+                    {% endfor %}
+                </a>
+                {{ movie.title }} ({{ movie.yearOfProduction }})
+            </div>
+        {% else %}
+            <p>No movie found</p>
+        {% endfor %}
+    </div>
+
+{% endblock %}

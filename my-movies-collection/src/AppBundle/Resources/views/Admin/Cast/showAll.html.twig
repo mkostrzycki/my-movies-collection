@@ -1,11 +1,11 @@
-{% extends '::base.html.twig' %}
+{% extends '::adminBase.html.twig' %}
 
 {% block body %}
 
     <ul>
         {% for cast in entireCast %}
             <li>
-                <a href="{{ path('app_cast_show', {'castId': cast.id}) }}">{{ cast.fullName }}</a>
+                <a href="{{ path('app_admincast_show', {'castId': cast.id}) }}">{{ cast.fullName }}</a>
             </li>
         {% else %}
             <p>No cast found</p>

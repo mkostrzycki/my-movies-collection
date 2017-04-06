@@ -1,0 +1,28 @@
+{% extends '::adminBase.html.twig' %}
+
+{% block body %}
+
+    <div style="width: 10%; height: auto; margin: 5px 5px 0 5px">
+        {% for poster in movie.posters %}
+            <img src="{{ vich_uploader_asset(poster, 'file') }}" alt="{{ movie.title }} poster"
+                 style="max-width: 100%; height: auto; border: 1px solid #ddd;  border-radius: 4px; padding: 5px;"/>
+        {% endfor %}
+    </div>
+
+    {{ movie.title }} ({{ movie.yearOfProduction }})
+
+    <h5>CAST:</h5>
+
+    {% for movieCastRole in movie.movieCastRoles %}
+        <p>{{ movieCastRole.role.name }}: <a
+                    href="{{ path('app_admincast_show', {'castId': movieCastRole.cast.id}) }}">{{ movieCastRole.cast.fullName }}</a>
+        </p>
+    {% else %}
+        <p>no cast</p>
+    {% endfor %}
+
+    <a href="{{ path('app_adminmovie_addcastasrole', {'movieId': movie.id}) }}">Add cast</a>
+    |
+    <a href="{{ path('app_adminposter_new', {'movieId': movie.id}) }}">Add poster</a>
+
+{% endblock %}
