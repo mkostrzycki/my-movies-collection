@@ -157,4 +157,29 @@ class Poster
     {
         return $this->size;
     }
+
+    public function getFileFromUrl($url)
+    {
+        $posterImgFile = file_get_contents($url);
+
+        $posterFileName = uniqid() . '.jpg';
+
+        file_put_contents($this->getUploadRootDir() . $posterFileName, $posterImgFile);
+
+        $this->setName($posterFileName);
+
+        $this->updatedAt = new \DateTimeImmutable();
+    }
+
+    protected function getUploadRootDir()
+    {
+        // the absolute directory path where uploaded documents should be saved
+        return __DIR__ . '/../../../web/' . $this->getUploadDir();
+    }
+
+    protected function getUploadDir()
+    {
+        // get rid of the __DIR__ so it doesn't screw when displaying uploaded doc/image in the view.
+        return 'images/posters/';
+    }
 }

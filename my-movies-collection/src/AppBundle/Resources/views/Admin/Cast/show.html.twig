@@ -4,4 +4,17 @@
 
     {{ cast.fullName }}
 
+    <h5>Participated in:</h5>
+
+    {% for movieCastRole in cast.movieCastRoles %}
+
+        <a href="{{ path('app_adminmovie_show', {'movieId': movieCastRole.movie.id}) }}">
+            {{ movieCastRole.movie.title }}
+        </a> as <b>{{ movieCastRole.role.name }}</b>
+        <br>
+
+    {% else %}
+        <p>No movies found</p>
+    {% endfor %}
+
 {% endblock %}

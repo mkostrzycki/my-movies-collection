@@ -18,14 +18,41 @@
 
         </div>
 
-        <p>{{ movie.Title }} ({{ movie.Year }})</p>
+        <form action="" method="POST">
+
+            <label>Title:
+                <input type="text" name="title" value="{{ movie.Title }}" style="width: 200px">
+            </label>
+            <br>
+            <label>Year:
+                <input type="number" name="year" value="{{ movie.Year }}" style="width: 100px">
+            </label>
+            <br>
+            <label>Poster URL:
+                <input type="text" name="posterUrl" value="{{ movie.Poster }}" style="width: 100px">
+            </label>
+            <br>
+            <label>Director(s):
+                <input type="text" name="director" value="{{ movie.Director }}" style="width: 200px">
+            </label>
+            <br>
+            <label>Writer(s):
+                <input type="text" name="writer" value="{{ movie.Writer }}" style="width: 200px">
+            </label>
+            <br>
+            <label>Actors:
+                <input type="text" name="actors" value="{{ movie.Actors }}" style="width: 500px">
+            </label>
+            <br><br>
+            <input type="submit" value="Add movie to collection">
+        </form>
+
+        <h5>Additional info:</h5>
+
         <p>Rated: {{ movie.Rated }}</p>
         <p>Released: {{ movie.Released }}</p>
         <p>Runtime: {{ movie.Runtime }}</p>
         <p>Genre: {{ movie.Genre }}</p>
-        <p>Director: {{ movie.Director }}</p>
-        <p>Writer: {{ movie.Writer }}</p>
-        <p>Actors: {{ movie.Actors }}</p>
         <p>Plot: {{ movie.Plot }}</p>
         <p>Language: {{ movie.Language }}</p>
         <p>Country: {{ movie.Country }}</p>

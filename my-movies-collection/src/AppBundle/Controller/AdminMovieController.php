@@ -2,11 +2,15 @@
 
 namespace AppBundle\Controller;
 
+use AppBundle\Entity\Cast;
 use AppBundle\Entity\Movie;
 use AppBundle\Entity\MovieCastRole;
+use AppBundle\Entity\Poster;
+use AppBundle\Entity\Role;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use Symfony\Component\Config\Definition\Exception\Exception;
 use Symfony\Component\Form\Extension\Core\Type\SearchType;
 use Symfony\Component\HttpFoundation\Request;
 
@@ -219,9 +223,9 @@ class AdminMovieController extends Controller
      * @Route("/searchApiResult/{imdbId}")
      * @Template("AppBundle:Admin/Movie:searchApiResult.html.twig")
      * @param $imdbId
-     * @return array
+     * @return array|\Symfony\Component\HttpFoundation\RedirectResponse
      */
-    public function apiTitleSearchResultAction($imdbId)
+    public function apiTitleSearchResultAction(Request $request, $imdbId)
     {
         /** @var \GuzzleHttp\Client $client */
         $client = $this->get('guzzle.client.api_omdb');
@@ -238,6 +242,236 @@ class AdminMovieController extends Controller
         $json = $response->getBody();
 
         $decodedJson = \GuzzleHttp\json_decode($json, true);
+
+        if ($request->getMethod() === 'POST') {
+
+            $title = $request->request->get('title');
+            $yearOfProduction = $request->request->get('year');
+
+            // check if movie with this title and year exist
+            $movie = $this
+                ->getDoctrine()
+                ->getRepository('AppBundle:Movie')->findOneBy([
+                    'title' => $title,
+                    'yearOfProduction' => $yearOfProduction
+                ]);
+
+            if ($movie) {
+                throw new Exception('Movie with title ' . $title . ' from year ' . $yearOfProduction . ' already added to collection!');
+            }
+
+            // create new movie from form
+            $movie = new Movie();
+
+            $em = $this
+                ->getDoctrine()
+                ->getManager();
+
+            $em->persist($movie);
+
+            $movie->setTitle($title);
+            $movie->setYearOfProduction($yearOfProduction);
+
+            // create new poster from form Url
+            $poster = new Poster();
+
+            $em->persist($poster);
+
+            $posterUrl = $request->request->get('posterUrl');
+
+            $poster->getFileFromUrl($posterUrl);
+
+            $movie->addPoster($poster);
+            $poster->setMovie($movie);
+
+            // check if cast with this fullname exist
+
+            /**
+             * Get roles
+             */
+            $roleDirector = $this
+                ->getDoctrine()
+                ->getRepository('AppBundle:Role')->findOneBy([
+                    'name' => 'director'
+                ]);
+
+            $roleWriter = $this
+                ->getDoctrine()
+                ->getRepository('AppBundle:Role')->findOneBy([
+                    'name' => 'writer'
+                ]);
+
+            $roleActor = $this
+                ->getDoctrine()
+                ->getRepository('AppBundle:Role')->findOneBy([
+                    'name' => 'actor'
+                ]);
+
+            /**
+             * Arrays of cast full names
+             */
+            $directorsNames = $request->request->get('director');
+            $directorsNames = explode(', ', $directorsNames);
+            /** @ToDo: Make it universal - split by comma and trim every array cell */
+
+            $writersNames = $request->request->get('writer');
+            $writersNames = explode(', ', $writersNames);
+
+            $actorsNames = $request->request->get('actors');
+            $actorsNames = explode(', ', $actorsNames);
+
+            /**
+             * Arrays of Cast objects
+             */
+            $directors = [];
+            $writers = [];
+            $actors = [];
+
+            /**
+             * Get existed Cast or create new one and put it into array
+             */
+            foreach ($directorsNames as $directorName) {
+
+                $director = $this
+                    ->getDoctrine()
+                    ->getRepository('AppBundle:Cast')->findOneBy([
+                        'fullName' => $directorName
+                    ]);
+
+                if (!$director) {
+                    $director = new Cast();
+                    $director->setFullName($directorName);
+
+                    $em->persist($director);
+                }
+
+                $directors[] = $director;
+            }
+
+            /**
+             * @ToDo: Dodaj sprawdzanie przy kolejnych rolach, czy nie został stworzony nowy Cast dla poprzednich ról.
+             * Jeżeli tak, to weź tego Casta zamiast tworzyć nowego. Na razie, żeby uniknąć próby zapisywania dwa
+             * razy tego samego Casta, robię flush() dla każdej roli po kolei.
+             */
+
+            /**
+             * Connect entities
+             */
+            $movieCastRoleConnections = [];
+
+            foreach ($directors as $director) {
+
+                $movieCastRoleConnection = new MovieCastRole();
+
+                $movieCastRoleConnection->setMovie($movie);
+                $movieCastRoleConnection->setCast($director);
+                $movieCastRoleConnection->setRole($roleDirector);
+
+                $movie->addMovieCastRole($movieCastRoleConnection);
+                $director->addMovieCastRole($movieCastRoleConnection);
+                $roleDirector->addMovieCastRole($movieCastRoleConnection);
+
+                $movieCastRoleConnections[] = $movieCastRoleConnection;
+            }
+
+            foreach ($movieCastRoleConnections as $movieCastRoleConnection) {
+                $em->persist($movieCastRoleConnection);
+            }
+
+            $em->flush();
+
+            /**
+             * Get existed Cast or create new one and put it into array
+             */
+            foreach ($writersNames as $writerName) {
+
+                $writer = $this
+                    ->getDoctrine()
+                    ->getRepository('AppBundle:Cast')->findOneBy([
+                        'fullName' => $writerName
+                    ]);
+
+                if (!$writer) {
+                    $writer = new Cast();
+                    $writer->setFullName($writerName);
+
+                    $em->persist($writer);
+                }
+
+                $writers[] = $writer;
+            }
+
+            /**
+             * Connect entities
+             */
+            foreach ($writers as $writer) {
+
+                $movieCastRoleConnection = new MovieCastRole();
+
+                $movieCastRoleConnection->setMovie($movie);
+                $movieCastRoleConnection->setCast($writer);
+                $movieCastRoleConnection->setRole($roleWriter);
+
+                $movie->addMovieCastRole($movieCastRoleConnection);
+                $writer->addMovieCastRole($movieCastRoleConnection);
+                $roleWriter->addMovieCastRole($movieCastRoleConnection);
+
+                $movieCastRoleConnections[] = $movieCastRoleConnection;
+            }
+
+            foreach ($movieCastRoleConnections as $movieCastRoleConnection) {
+                $em->persist($movieCastRoleConnection);
+            }
+
+            $em->flush();
+
+            /**
+             * Get existed Cast or create new one and put it into array
+             */
+            foreach ($actorsNames as $actorName) {
+
+                $actor = $this
+                    ->getDoctrine()
+                    ->getRepository('AppBundle:Cast')->findOneBy([
+                        'fullName' => $actorName
+                    ]);
+
+                if (!$actor) {
+                    $actor = new Cast();
+                    $actor->setFullName($actorName);
+
+                    $em->persist($actor);
+                }
+
+                $actors[] = $actor;
+            }
+
+            /**
+             * Connect entities
+             */
+            foreach ($actors as $actor) {
+
+                $movieCastRoleConnection = new MovieCastRole();
+
+                $movieCastRoleConnection->setMovie($movie);
+                $movieCastRoleConnection->setCast($actor);
+                $movieCastRoleConnection->setRole($roleActor);
+
+                $movie->addMovieCastRole($movieCastRoleConnection);
+                $actor->addMovieCastRole($movieCastRoleConnection);
+                $roleActor->addMovieCastRole($movieCastRoleConnection);
+
+                $movieCastRoleConnections[] = $movieCastRoleConnection;
+            }
+
+            foreach ($movieCastRoleConnections as $movieCastRoleConnection) {
+                $em->persist($movieCastRoleConnection);
+            }
+
+            $em->flush();
+
+            return $this->redirectToRoute('app_adminmovie_show', ['movieId' => $movie->getId()]);
+        }
 
         return [
             'movie' => $decodedJson
