@@ -27,5 +27,24 @@ class MovieController extends Controller
         ];
     }
 
+    /**
+     * @Route("/{movieId}/show")
+     * @Template("AppBundle:Movie:showMovieDetails.html.twig")
+     * @param $movieId
+     * @return array
+     */
+    public function showMovieDetails($movieId)
+    {
+        $movie = $this
+            ->getDoctrine()
+            ->getRepository('AppBundle:Movie')->find($movieId);
 
+        if (!$movie) {
+            throw $this->createNotFoundException('Movie not found');
+        }
+
+        return [
+            'movie' => $movie
+        ];
+    }
 }

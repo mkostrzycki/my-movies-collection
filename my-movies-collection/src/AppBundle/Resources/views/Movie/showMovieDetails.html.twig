@@ -1,0 +1,17 @@
+{% extends '::base.html.twig' %}
+
+{% block body %}
+
+    <div class="container">
+
+        <div class="movie-poster">
+            {% for poster in movie.posters %}
+                <img src="{{ vich_uploader_asset(poster, 'file') }}" alt="{{ movie.title }} poster"/>
+            {% endfor %}
+        </div>
+
+        <p><b>Title:</b> {{ movie.title }} ({{ movie.yearOfProduction }})</p>
+
+    </div>
+
+{% endblock %}
