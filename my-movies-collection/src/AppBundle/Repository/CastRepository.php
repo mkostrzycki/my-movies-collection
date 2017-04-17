@@ -12,4 +12,13 @@ use Doctrine\ORM\EntityRepository;
  */
 class CastRepository extends EntityRepository
 {
+    public function getMovies()
+    {
+
+    }
+
+    public function getMoviesByRole()
+    {
+
+    }
 }

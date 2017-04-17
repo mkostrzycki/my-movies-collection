@@ -25,7 +25,6 @@ class AdminPosterController extends Controller
     {
         $poster = new Poster();
 
-        /** @var Movie */
         $movie = $this
             ->getDoctrine()
             ->getRepository('AppBundle:Movie')->find($movieId);

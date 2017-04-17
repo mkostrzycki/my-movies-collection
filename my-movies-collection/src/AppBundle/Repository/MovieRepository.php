@@ -12,4 +12,13 @@ use Doctrine\ORM\EntityRepository;
  */
 class MovieRepository extends EntityRepository
 {
+    public function getEntireCast()
+    {
+
+    }
+
+    public function getEntireCastByRole()
+    {
+
+    }
 }

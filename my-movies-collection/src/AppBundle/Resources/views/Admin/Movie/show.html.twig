@@ -14,8 +14,9 @@
     <h5>CAST:</h5>
 
     {% for movieCastRole in movie.movieCastRoles %}
-        <p>{{ movieCastRole.role.name }}: <a
-                    href="{{ path('app_admincast_show', {'castId': movieCastRole.cast.id}) }}">{{ movieCastRole.cast.fullName }}</a>
+        <p>{{ movieCastRole.role.name }} <span>({{movieCastRole.roleDescription|default('') }})</span>:
+            <a href="{{ path('app_admincast_show', {'castId': movieCastRole.cast.id}) }}">
+                {{ movieCastRole.cast.fullName }}</a>
         </p>
     {% else %}
         <p>no cast</p>

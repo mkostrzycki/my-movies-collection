@@ -113,18 +113,8 @@ class Movie
         return $this->yearOfProduction;
     }
 
-    public function getEntireCast()
-    {
-
-    }
-
-    public function getEntireCastByRole()
-    {
-
-    }
-
     /**
-     * Add movieCastRoles
+     * Add movieCastRole
      *
      * @param MovieCastRole $movieCastRole
      * @return Movie
@@ -137,7 +127,7 @@ class Movie
     }
 
     /**
-     * Remove movieCastRoles
+     * Remove movieCastRole
      *
      * @param MovieCastRole $movieCastRole
      */

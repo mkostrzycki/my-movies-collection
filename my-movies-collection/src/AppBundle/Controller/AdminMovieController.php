@@ -118,15 +118,9 @@ class AdminMovieController extends Controller
                 ->getDoctrine()
                 ->getRepository('AppBundle:Role')->find($request->request->get('roleId'));
 
-            $movieCastRole = new MovieCastRole();
+            $roleDescription = $request->request->get('roleDescription');
 
-            $movieCastRole->setMovie($movie);
-            $movieCastRole->setCast($cast);
-            $movieCastRole->setRole($role);
-
-            $movie->addMovieCastRole($movieCastRole);
-            $cast->addMovieCastRole($movieCastRole);
-            $role->addMovieCastRole($movieCastRole);
+            $movieCastRole = $this->createCastInMovieAsRoleEntry($cast, $movie, $role, $roleDescription);
 
             $em = $this
                 ->getDoctrine()
@@ -178,6 +172,8 @@ class AdminMovieController extends Controller
     }
 
     /**
+     * Search results view with pagination
+     *
      * @Route("/searchApiResults/{searchPhrase}/{pageNumber}", defaults={"pageNumber = 1"})
      * @Template("AppBundle:Admin/Movie:searchApiResults.html.twig")
      * @param $searchPhrase
@@ -220,8 +216,11 @@ class AdminMovieController extends Controller
     }
 
     /**
+     * Movie details from API view as form. You can add result from API as new movie to DB.
+     *
      * @Route("/searchApiResult/{imdbId}")
      * @Template("AppBundle:Admin/Movie:searchApiResult.html.twig")
+     * @param Request $request
      * @param $imdbId
      * @return array|\Symfony\Component\HttpFoundation\RedirectResponse
      */
@@ -260,12 +259,12 @@ class AdminMovieController extends Controller
                 throw new Exception('Movie with title ' . $title . ' from year ' . $yearOfProduction . ' already added to collection!');
             }
 
-            // create new movie from form
-            $movie = new Movie();
-
             $em = $this
                 ->getDoctrine()
                 ->getManager();
+
+            // create new movie from form
+            $movie = new Movie();
 
             $em->persist($movie);
 
@@ -287,7 +286,7 @@ class AdminMovieController extends Controller
             // check if cast with this fullname exist
 
             /**
-             * Get roles
+             * Get roles by names
              */
             $roleDirector = $this
                 ->getDoctrine()
@@ -310,15 +309,38 @@ class AdminMovieController extends Controller
             /**
              * Arrays of cast full names
              */
+            // We will delete parentheses with content eg. "Steven Spielberg (screenplay)"
+            $patternToDelete = '/\(.*\)/';
+
+            // directors
             $directorsNames = $request->request->get('director');
-            $directorsNames = explode(', ', $directorsNames);
-            /** @ToDo: Make it universal - split by comma and trim every array cell */
+            $directorsNames = explode(',', $directorsNames);
 
+            foreach ($directorsNames as $key => $value) {
+                $directorsNames[$key] = trim(preg_replace($patternToDelete, '', $value));
+            }
+
+            $directorsNames = array_unique($directorsNames);
+
+            // writers
             $writersNames = $request->request->get('writer');
-            $writersNames = explode(', ', $writersNames);
+            $writersNames = explode(',', $writersNames);
 
+            foreach ($writersNames as $key => $value) {
+                $writersNames[$key] = trim(preg_replace($patternToDelete, '', $value));
+            }
+
+            $writersNames = array_unique($writersNames);
+
+            // actors
             $actorsNames = $request->request->get('actors');
-            $actorsNames = explode(', ', $actorsNames);
+            $actorsNames = explode(',', $actorsNames);
+
+            foreach ($actorsNames as $key => $value) {
+                $actorsNames[$key] = trim(preg_replace($patternToDelete, '', $value));
+            }
+
+            $actorsNames = array_unique($actorsNames);
 
             /**
              * Arrays of Cast objects
@@ -355,27 +377,17 @@ class AdminMovieController extends Controller
              */
 
             /**
-             * Connect entities
+             * Connect entities - create new entries
              */
-            $movieCastRoleConnections = [];
+            $movieCastRoleEntries = [];
 
             foreach ($directors as $director) {
 
-                $movieCastRoleConnection = new MovieCastRole();
+                $movieCastRoleEntry = $this->createCastInMovieAsRoleEntry($director, $movie, $roleDirector);
 
-                $movieCastRoleConnection->setMovie($movie);
-                $movieCastRoleConnection->setCast($director);
-                $movieCastRoleConnection->setRole($roleDirector);
+                $em->persist($movieCastRoleEntry);
 
-                $movie->addMovieCastRole($movieCastRoleConnection);
-                $director->addMovieCastRole($movieCastRoleConnection);
-                $roleDirector->addMovieCastRole($movieCastRoleConnection);
-
-                $movieCastRoleConnections[] = $movieCastRoleConnection;
-            }
-
-            foreach ($movieCastRoleConnections as $movieCastRoleConnection) {
-                $em->persist($movieCastRoleConnection);
+                $movieCastRoleEntries[] = $movieCastRoleEntry;
             }
 
             $em->flush();
@@ -402,25 +414,15 @@ class AdminMovieController extends Controller
             }
 
             /**
-             * Connect entities
+             * Connect entities - create new entries
              */
             foreach ($writers as $writer) {
 
-                $movieCastRoleConnection = new MovieCastRole();
+                $movieCastRoleEntry = $this->createCastInMovieAsRoleEntry($writer, $movie, $roleWriter);
 
-                $movieCastRoleConnection->setMovie($movie);
-                $movieCastRoleConnection->setCast($writer);
-                $movieCastRoleConnection->setRole($roleWriter);
+                $em->persist($movieCastRoleEntry);
 
-                $movie->addMovieCastRole($movieCastRoleConnection);
-                $writer->addMovieCastRole($movieCastRoleConnection);
-                $roleWriter->addMovieCastRole($movieCastRoleConnection);
-
-                $movieCastRoleConnections[] = $movieCastRoleConnection;
-            }
-
-            foreach ($movieCastRoleConnections as $movieCastRoleConnection) {
-                $em->persist($movieCastRoleConnection);
+                $movieCastRoleEntries[] = $movieCastRoleEntry;
             }
 
             $em->flush();
@@ -447,25 +449,15 @@ class AdminMovieController extends Controller
             }
 
             /**
-             * Connect entities
+             * Connect entities - create new entries
              */
             foreach ($actors as $actor) {
 
-                $movieCastRoleConnection = new MovieCastRole();
+                $movieCastRoleEntry = $this->createCastInMovieAsRoleEntry($actor, $movie, $roleActor);
 
-                $movieCastRoleConnection->setMovie($movie);
-                $movieCastRoleConnection->setCast($actor);
-                $movieCastRoleConnection->setRole($roleActor);
+                $em->persist($movieCastRoleEntry);
 
-                $movie->addMovieCastRole($movieCastRoleConnection);
-                $actor->addMovieCastRole($movieCastRoleConnection);
-                $roleActor->addMovieCastRole($movieCastRoleConnection);
-
-                $movieCastRoleConnections[] = $movieCastRoleConnection;
-            }
-
-            foreach ($movieCastRoleConnections as $movieCastRoleConnection) {
-                $em->persist($movieCastRoleConnection);
+                $movieCastRoleEntries[] = $movieCastRoleEntry;
             }
 
             $em->flush();
@@ -476,5 +468,31 @@ class AdminMovieController extends Controller
         return [
             'movie' => $decodedJson
         ];
+    }
+
+    /**
+     * Connect entities into one entry
+     *
+     * @param Cast $cast
+     * @param Movie $movie
+     * @param Role $role
+     * @param string|null $roleDescription
+     * @return MovieCastRole
+     */
+    public function createCastInMovieAsRoleEntry(Cast $cast, Movie $movie, Role $role, $roleDescription = null)
+    {
+        $movieCastRole = new MovieCastRole();
+
+        $movieCastRole->setMovie($movie);
+        $movieCastRole->setCast($cast);
+        $movieCastRole->setRole($role);
+
+        $movieCastRole->setRoleDescription($roleDescription);
+
+        $movie->addMovieCastRole($movieCastRole);
+        $cast->addMovieCastRole($movieCastRole);
+        $role->addMovieCastRole($movieCastRole);
+
+        return $movieCastRole;
     }
 }

@@ -36,6 +36,13 @@ class MovieCastRole
      */
     private $role;
 
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="role_description", type="string", length=255, nullable=true)
+     */
+    private $roleDescription;
+
 
     /**
      * Get id
@@ -114,5 +121,28 @@ class MovieCastRole
     public function getRole()
     {
         return $this->role;
+    }
+
+    /**
+     * Set roleDescription
+     *
+     * @param string $roleDescription
+     * @return MovieCastRole
+     */
+    public function setRoleDescription($roleDescription)
+    {
+        $this->roleDescription = $roleDescription;
+
+        return $this;
+    }
+
+    /**
+     * Get roleDescription
+     *
+     * @return string 
+     */
+    public function getRoleDescription()
+    {
+        return $this->roleDescription;
     }
 }

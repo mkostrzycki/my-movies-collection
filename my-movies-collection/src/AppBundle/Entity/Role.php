@@ -25,7 +25,7 @@ class Role
     /**
      * @var string
      *
-     * @ORM\Column(name="name", type="string", length=255, unique=true)
+     * @ORM\Column(name="name", type="string", length=255)
      */
     private $name;
 
@@ -70,7 +70,7 @@ class Role
     /**
      * Get name
      *
-     * @return string 
+     * @return string
      */
     public function getName()
     {
@@ -78,26 +78,26 @@ class Role
     }
 
     /**
-     * Add movieCastRoles
+     * Add movieCastRole
      *
-     * @param MovieCastRole $movieCastRoles
+     * @param MovieCastRole $movieCastRole
      * @return Role
      */
-    public function addMovieCastRole(MovieCastRole $movieCastRoles)
+    public function addMovieCastRole(MovieCastRole $movieCastRole)
     {
-        $this->movieCastRoles[] = $movieCastRoles;
+        $this->movieCastRoles[] = $movieCastRole;
 
         return $this;
     }
 
     /**
-     * Remove movieCastRoles
+     * Remove movieCastRole
      *
-     * @param MovieCastRole $movieCastRoles
+     * @param MovieCastRole $movieCastRole
      */
-    public function removeMovieCastRole(MovieCastRole $movieCastRoles)
+    public function removeMovieCastRole(MovieCastRole $movieCastRole)
     {
-        $this->movieCastRoles->removeElement($movieCastRoles);
+        $this->movieCastRoles->removeElement($movieCastRole);
     }
 
     /**

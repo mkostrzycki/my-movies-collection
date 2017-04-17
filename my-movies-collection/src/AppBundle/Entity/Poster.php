@@ -158,6 +158,11 @@ class Poster
         return $this->size;
     }
 
+    /**
+     * Add poster file from URL
+     *
+     * @param string $url
+     */
     public function getFileFromUrl($url)
     {
         $posterImgFile = file_get_contents($url);
@@ -171,15 +176,48 @@ class Poster
         $this->updatedAt = new \DateTimeImmutable();
     }
 
+    /**
+     * Get absolute path to posters directory
+     *
+     * @return string
+     */
     protected function getUploadRootDir()
     {
         // the absolute directory path where uploaded documents should be saved
         return __DIR__ . '/../../../web/' . $this->getUploadDir();
     }
 
+    /**
+     * Get inner path (in web folder) with movie posters
+     *
+     * @return string
+     */
     protected function getUploadDir()
     {
         // get rid of the __DIR__ so it doesn't screw when displaying uploaded doc/image in the view.
         return 'images/posters/';
+    }
+
+    /**
+     * Set updatedAt
+     *
+     * @param \DateTime $updatedAt
+     * @return Poster
+     */
+    public function setUpdatedAt($updatedAt)
+    {
+        $this->updatedAt = $updatedAt;
+
+        return $this;
+    }
+
+    /**
+     * Get updatedAt
+     *
+     * @return \DateTime 
+     */
+    public function getUpdatedAt()
+    {
+        return $this->updatedAt;
     }
 }
