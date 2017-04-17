@@ -1,0 +1,17 @@
+{% extends '::adminBase.html.twig' %}
+
+{% block body %}
+
+    <ul>
+        {% for ageCategory in ageCategories %}
+            <li>
+                <a href="#">{{ ageCategory.name }}</a>
+            </li>
+        {% else %}
+            <p>No age category found</p>
+        {% endfor %}
+    </ul>
+
+    <a href="{{ path('app_adminagecategory_new') }}">Add new age category</a>
+
+{% endblock %}

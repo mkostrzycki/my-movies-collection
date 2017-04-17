@@ -20,47 +20,77 @@
 
         <form action="" method="POST">
 
-            <label>Title:
-                <input type="text" name="title" value="{{ movie.Title }}" style="width: 200px">
+            <label><b>Title:</b>
+                <input type="text" name="title" value="{{ movie.Title }}" style="width: 300px">
             </label>
             <br>
-            <label>Year:
+            <label><b>Year:</b>
                 <input type="number" name="year" value="{{ movie.Year }}" style="width: 100px">
             </label>
             <br>
-            <label>Poster URL:
-                <input type="text" name="posterUrl" value="{{ movie.Poster }}" style="width: 100px">
+            <label><b>Age category:</b>
+                <input type="text" name="ageCategory" value="{{ movie.Rated }}" style="width: 100px">
             </label>
             <br>
-            <label>Director(s):
-                <input type="text" name="director" value="{{ movie.Director }}" style="width: 200px">
+            <label><b>Runtime:</b>
+                <input type="text" name="runtime" value="{{ movie.Runtime }}" style="width: 100px">
             </label>
             <br>
-            <label>Writer(s):
-                <input type="text" name="writer" value="{{ movie.Writer }}" style="width: 200px">
+            <label><b>Country:</b>
+                <input type="text" name="country" value="{{ movie.Country }}" style="width: 100px">
             </label>
             <br>
-            <label>Actors:
-                <input type="text" name="actors" value="{{ movie.Actors }}" style="width: 500px">
+            <label><b>IMDB Rating:</b>
+                <input type="number" name="imdbRating" value="{{ movie.imdbRating }}" min="0" max="10" step="0.1" style="width: 100px">
             </label>
-            <br><br>
+            <br>
+            <label><b>IMDB Votes:</b>
+                <input type="text" name="imdbVotes" value="{{ movie.imdbVotes }}" style="width: 150px">
+            </label>
+            <br>
+            <label><b>IMDB ID:</b>
+                <input type="text" name="imdbId" value="{{ movie.imdbID }}" style="width: 100px">
+            </label>
+            <br>
+            <label><b>Genres:</b><br>
+                <textarea name="imdbGenres" rows="3" cols="60">{{ movie.Genre }}
+                </textarea>
+            </label>
+            <br>
+            <label><b>Poster URL:</b><br>
+                <textarea name="posterUrl" rows="3" cols="60">{{ movie.Poster }}
+                </textarea>
+            </label>
+            <br>
+            <label><b>Director(s):</b><br>
+                <textarea name="director" rows="5" cols="60">{{ movie.Director }}
+                </textarea>
+            </label>
+            <br>
+            <label><b>Writer(s):</b><br>
+                <textarea name="writer" rows="5" cols="60">{{ movie.Writer }}
+                </textarea>
+            </label>
+            <br>
+            <label><b>Actors:</b><br>
+                <textarea name="actors" rows="5" cols="60">{{ movie.Actors }}
+                </textarea>
+            </label>
+            <br>
             <input type="submit" value="Add movie to collection">
         </form>
 
         <h5>Additional info:</h5>
 
-        <p>Rated: {{ movie.Rated }}</p>
-        <p>Released: {{ movie.Released }}</p>
-        <p>Runtime: {{ movie.Runtime }}</p>
-        <p>Genre: {{ movie.Genre }}</p>
-        <p>Plot: {{ movie.Plot }}</p>
-        <p>Language: {{ movie.Language }}</p>
-        <p>Country: {{ movie.Country }}</p>
-        <p>Awards: {{ movie.Awards }}</p>
-        <p>IMDB Rating: {{ movie.imdbRating }}</p>
-        <p>IMDB Votes: {{ movie.imdbVotes }}</p>
-        <p>IMDB ID: {{ movie.imdbID }}</p>
-        <p>Production: {{ movie.Production }}</p>
+        <span><b>Released:</b> {{ movie.Released }}</span>
+        <br>
+        <span><b>Plot:</b> {{ movie.Plot }}</span>
+        <br>
+        <span><b>Language:</b> {{ movie.Language }}</span>
+        <br>
+        <span><b>Awards:</b> {{ movie.Awards }}</span>
+        <br>
+        <span><b>Production:</b> {{ movie.Production }}</span>
 
     {% else %}
         <p>No movie found</p>

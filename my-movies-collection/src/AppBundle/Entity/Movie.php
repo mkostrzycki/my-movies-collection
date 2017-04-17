@@ -37,10 +37,55 @@ class Movie
     private $yearOfProduction;
 
     /**
+     * @ORM\ManyToOne(targetEntity="AppBundle\Entity\AgeCategory", inversedBy="movies")
+     */
+    private $ageCategory;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="runtime", type="string", length=255, nullable=true)
+     */
+    private $runtime;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="country", type="string", length=255, nullable=true)
+     */
+    private $country;
+
+    /**
+     * @var float
+     *
+     * @ORM\Column(name="imdb_rating", type="decimal", precision=3, scale=1, nullable=true)
+     */
+    private $imdbRating;
+
+    /**
+     * @var integer
+     *
+     * @ORM\Column(name="imdb_votes", type="integer", nullable=true)
+     */
+    private $imdbVotes;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="imdb_id", type="string", length=20, nullable=true)
+     */
+    private $imdbId;
+
+    /**
      * @ORM\OneToMany(targetEntity="AppBundle\Entity\MovieCastRole", mappedBy="movie")
      * @ORM\JoinTable(name="movieCastRole")
      */
     private $movieCastRoles;
+
+    /**
+     * @ORM\ManyToMany(targetEntity="AppBundle\Entity\ImdbGenre", inversedBy="movies")
+     */
+    private $imdbGenres;
 
     /**
      * @ORM\OneToMany(targetEntity="AppBundle\Entity\Poster", mappedBy="movie")
@@ -54,6 +99,7 @@ class Movie
     public function __construct()
     {
         $this->movieCastRoles = new ArrayCollection();
+        $this->imdbGenres = new ArrayCollection();
         $this->posters = new ArrayCollection();
     }
 
@@ -177,5 +223,176 @@ class Movie
     public function getPosters()
     {
         return $this->posters;
+    }
+
+    /**
+     * Set ageCategory
+     *
+     * @param AgeCategory $ageCategory
+     * @return Movie
+     */
+    public function setAgeCategory(AgeCategory $ageCategory = null)
+    {
+        $this->ageCategory = $ageCategory;
+
+        return $this;
+    }
+
+    /**
+     * Get ageCategory
+     *
+     * @return AgeCategory
+     */
+    public function getAgeCategory()
+    {
+        return $this->ageCategory;
+    }
+
+    /**
+     * Set runtime
+     *
+     * @param string $runtime
+     * @return Movie
+     */
+    public function setRuntime($runtime)
+    {
+        $this->runtime = $runtime;
+
+        return $this;
+    }
+
+    /**
+     * Get runtime
+     *
+     * @return string 
+     */
+    public function getRuntime()
+    {
+        return $this->runtime;
+    }
+
+    /**
+     * Set country
+     *
+     * @param string $country
+     * @return Movie
+     */
+    public function setCountry($country)
+    {
+        $this->country = $country;
+
+        return $this;
+    }
+
+    /**
+     * Get country
+     *
+     * @return string 
+     */
+    public function getCountry()
+    {
+        return $this->country;
+    }
+
+    /**
+     * Set imdbRating
+     *
+     * @param string $imdbRating
+     * @return Movie
+     */
+    public function setImdbRating($imdbRating)
+    {
+        $this->imdbRating = $imdbRating;
+
+        return $this;
+    }
+
+    /**
+     * Get imdbRating
+     *
+     * @return string 
+     */
+    public function getImdbRating()
+    {
+        return $this->imdbRating;
+    }
+
+    /**
+     * Set imdbVotes
+     *
+     * @param integer $imdbVotes
+     * @return Movie
+     */
+    public function setImdbVotes($imdbVotes)
+    {
+        $this->imdbVotes = $imdbVotes;
+
+        return $this;
+    }
+
+    /**
+     * Get imdbVotes
+     *
+     * @return integer 
+     */
+    public function getImdbVotes()
+    {
+        return $this->imdbVotes;
+    }
+
+    /**
+     * Set imdbId
+     *
+     * @param string $imdbId
+     * @return Movie
+     */
+    public function setImdbId($imdbId)
+    {
+        $this->imdbId = $imdbId;
+
+        return $this;
+    }
+
+    /**
+     * Get imdbId
+     *
+     * @return string 
+     */
+    public function getImdbId()
+    {
+        return $this->imdbId;
+    }
+
+    /**
+     * Add imdbGenres
+     *
+     * @param \AppBundle\Entity\ImdbGenre $imdbGenres
+     * @return Movie
+     */
+    public function addImdbGenre(\AppBundle\Entity\ImdbGenre $imdbGenres)
+    {
+        $this->imdbGenres[] = $imdbGenres;
+
+        return $this;
+    }
+
+    /**
+     * Remove imdbGenres
+     *
+     * @param \AppBundle\Entity\ImdbGenre $imdbGenres
+     */
+    public function removeImdbGenre(\AppBundle\Entity\ImdbGenre $imdbGenres)
+    {
+        $this->imdbGenres->removeElement($imdbGenres);
+    }
+
+    /**
+     * Get imdbGenres
+     *
+     * @return \Doctrine\Common\Collections\Collection 
+     */
+    public function getImdbGenres()
+    {
+        return $this->imdbGenres;
     }
 }

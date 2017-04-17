@@ -9,12 +9,27 @@
         {% endfor %}
     </div>
 
-    {{ movie.title }} ({{ movie.yearOfProduction }})
+    <h3>{{ movie.title }} ({{ movie.yearOfProduction }})</h3>
+
+    <p>age category: {{ movie.ageCategory.name }}</p>
+    <p>runtime: {{ movie.runtime }}</p>
+    <p>country: {{ movie.country }}</p>
+    <p>imdb rating: {{ movie.imdbRating }}</p>
+    <p>imdb votes: {{ movie.imdbVotes }}</p>
+    <p>imdb id: {{ movie.imdbId }}</p>
+
+    <h5>GENRES:</h5>
+
+    {% for genre in movie.imdbGenres %}
+        <a href="#">{{ genre.name }}</a>{{ loop.last ? '' : ', ' }}
+    {% else %}
+        <p>no genres</p>
+    {% endfor %}
 
     <h5>CAST:</h5>
 
     {% for movieCastRole in movie.movieCastRoles %}
-        <p>{{ movieCastRole.role.name }} <span>({{movieCastRole.roleDescription|default('') }})</span>:
+        <p>{{ movieCastRole.role.name }}:
             <a href="{{ path('app_admincast_show', {'castId': movieCastRole.cast.id}) }}">
                 {{ movieCastRole.cast.fullName }}</a>
         </p>

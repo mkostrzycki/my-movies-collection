@@ -2,7 +2,9 @@
 
 namespace AppBundle\Controller;
 
+use AppBundle\Entity\AgeCategory;
 use AppBundle\Entity\Cast;
+use AppBundle\Entity\ImdbGenre;
 use AppBundle\Entity\Movie;
 use AppBundle\Entity\MovieCastRole;
 use AppBundle\Entity\Poster;
@@ -263,7 +265,9 @@ class AdminMovieController extends Controller
                 ->getDoctrine()
                 ->getManager();
 
-            // create new movie from form
+            /**
+             * Create new movie and add data from form
+             */
             $movie = new Movie();
 
             $em->persist($movie);
@@ -271,7 +275,41 @@ class AdminMovieController extends Controller
             $movie->setTitle($title);
             $movie->setYearOfProduction($yearOfProduction);
 
-            // create new poster from form Url
+            $movie->setRuntime($request->request->get('runtime'));
+            $movie->setCountry($request->request->get('country'));
+            $movie->setImdbRating($request->request->get('imdbRating'));
+
+            // remove thousands separator and other separators
+            $imdbVotesFromApi = $request->request->get('imdbVotes');
+            $imdbVotes = str_replace([' ', '.', ','], '', $imdbVotesFromApi);
+            $movie->setImdbVotes($imdbVotes);
+
+            $movie->setImdbId($request->request->get('imdbId'));
+
+            /**
+             * Add age category (existing or create new one)
+             */
+            $ageCategoryName = strtolower($request->request->get('ageCategory'));
+
+            $ageCategory = $this
+                ->getDoctrine()
+                ->getRepository('AppBundle:AgeCategory')->findOneBy([
+                    'name' => $ageCategoryName
+                ]);
+
+            if (!$ageCategory) {
+                $ageCategory = new AgeCategory();
+                $ageCategory->setName($ageCategoryName);
+
+                $em->persist($ageCategory);
+            }
+
+            $movie->setAgeCategory($ageCategory);
+            $ageCategory->addMovie($movie);
+
+            /**
+             * Add poster from URL
+             */
             $poster = new Poster();
 
             $em->persist($poster);
@@ -283,7 +321,54 @@ class AdminMovieController extends Controller
             $movie->addPoster($poster);
             $poster->setMovie($movie);
 
-            // check if cast with this fullname exist
+            /**
+             * ADD GENRES
+             */
+
+            /**
+             * Array of genres from form
+             */
+            $genresNames = $request->request->get('imdbGenres');
+            $genresNames = explode(',', $genresNames);
+
+            foreach ($genresNames as $key => $value) {
+                $genresNames[$key] = trim(strtolower($value));
+            }
+
+            /**
+             * Get existing genre or create new one and add to an array
+             */
+            $imdbGenres = [];
+
+            foreach ($genresNames as $genreName) {
+
+                $imdbGenre = $this
+                    ->getDoctrine()
+                    ->getRepository('AppBundle:ImdbGenre')->findOneBy([
+                        'name' => $genreName
+                    ]);
+
+                if (!$imdbGenre) {
+                    $imdbGenre = new ImdbGenre();
+                    $imdbGenre->setName($genreName);
+
+                    $em->persist($imdbGenre);
+                }
+
+                $imdbGenres[] = $imdbGenre;
+            }
+
+            /**
+             * Add genres to movie
+             */
+            foreach ($imdbGenres as $imdbGenre) {
+                $movie->addImdbGenre($imdbGenre);
+                $imdbGenre->addMovie($movie);
+            }
+
+            /**
+             * ADD CAST
+             */
 
             /**
              * Get roles by names
@@ -350,7 +435,7 @@ class AdminMovieController extends Controller
             $actors = [];
 
             /**
-             * Get existed Cast or create new one and put it into array
+             * Get existing Cast or create new one and put it into array
              */
             foreach ($directorsNames as $directorName) {
 

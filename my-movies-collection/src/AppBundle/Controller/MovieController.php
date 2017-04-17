@@ -13,7 +13,7 @@ class MovieController extends Controller
 {
     /**
      * @Route("/grid")
-     * @Template("AppBundle:Movie:showGrid.html.twig")
+     * @Template("AppBundle:Front/Movie:showGrid.html.twig")
      * @return array
      */
     public function showGridAction()
@@ -29,7 +29,7 @@ class MovieController extends Controller
 
     /**
      * @Route("/{movieId}/show")
-     * @Template("AppBundle:Movie:showMovieDetails.html.twig")
+     * @Template("AppBundle:Front/Movie:showMovieDetails.html.twig")
      * @param $movieId
      * @return array
      */
