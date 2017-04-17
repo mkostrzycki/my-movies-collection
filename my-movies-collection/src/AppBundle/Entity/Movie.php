@@ -49,11 +49,9 @@ class Movie
     private $runtime;
 
     /**
-     * @var string
-     *
-     * @ORM\Column(name="country", type="string", length=255, nullable=true)
+     * @ORM\ManyToMany(targetEntity="AppBundle\Entity\CountryOfProduction", inversedBy="movies")
      */
-    private $country;
+    private $countriesOfProduction;
 
     /**
      * @var float
@@ -99,6 +97,7 @@ class Movie
     public function __construct()
     {
         $this->movieCastRoles = new ArrayCollection();
+        $this->countriesOfProduction = new ArrayCollection();
         $this->imdbGenres = new ArrayCollection();
         $this->posters = new ArrayCollection();
     }
@@ -272,29 +271,6 @@ class Movie
     }
 
     /**
-     * Set country
-     *
-     * @param string $country
-     * @return Movie
-     */
-    public function setCountry($country)
-    {
-        $this->country = $country;
-
-        return $this;
-    }
-
-    /**
-     * Get country
-     *
-     * @return string 
-     */
-    public function getCountry()
-    {
-        return $this->country;
-    }
-
-    /**
      * Set imdbRating
      *
      * @param string $imdbRating
@@ -364,26 +340,26 @@ class Movie
     }
 
     /**
-     * Add imdbGenres
+     * Add imdbGenre
      *
-     * @param \AppBundle\Entity\ImdbGenre $imdbGenres
+     * @param ImdbGenre $imdbGenre
      * @return Movie
      */
-    public function addImdbGenre(\AppBundle\Entity\ImdbGenre $imdbGenres)
+    public function addImdbGenre(ImdbGenre $imdbGenre)
     {
-        $this->imdbGenres[] = $imdbGenres;
+        $this->imdbGenres[] = $imdbGenre;
 
         return $this;
     }
 
     /**
-     * Remove imdbGenres
+     * Remove imdbGenre
      *
-     * @param \AppBundle\Entity\ImdbGenre $imdbGenres
+     * @param ImdbGenre $imdbGenre
      */
-    public function removeImdbGenre(\AppBundle\Entity\ImdbGenre $imdbGenres)
+    public function removeImdbGenre(ImdbGenre $imdbGenre)
     {
-        $this->imdbGenres->removeElement($imdbGenres);
+        $this->imdbGenres->removeElement($imdbGenre);
     }
 
     /**
@@ -394,5 +370,38 @@ class Movie
     public function getImdbGenres()
     {
         return $this->imdbGenres;
+    }
+
+    /**
+     * Add countryOfProduction
+     *
+     * @param CountryOfProduction $countryOfProduction
+     * @return Movie
+     */
+    public function addCountryOfProduction(CountryOfProduction $countryOfProduction)
+    {
+        $this->countriesOfProduction[] = $countryOfProduction;
+
+        return $this;
+    }
+
+    /**
+     * Remove countryOfProduction
+     *
+     * @param CountryOfProduction $countryOfProduction
+     */
+    public function removeCountryOfProduction(CountryOfProduction $countryOfProduction)
+    {
+        $this->countriesOfProduction->removeElement($countryOfProduction);
+    }
+
+    /**
+     * Get countriesOfProduction
+     *
+     * @return \Doctrine\Common\Collections\Collection 
+     */
+    public function getCountriesOfProduction()
+    {
+        return $this->countriesOfProduction;
     }
 }

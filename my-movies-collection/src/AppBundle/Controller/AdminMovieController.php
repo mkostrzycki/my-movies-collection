@@ -4,6 +4,7 @@ namespace AppBundle\Controller;
 
 use AppBundle\Entity\AgeCategory;
 use AppBundle\Entity\Cast;
+use AppBundle\Entity\CountryOfProduction;
 use AppBundle\Entity\ImdbGenre;
 use AppBundle\Entity\Movie;
 use AppBundle\Entity\MovieCastRole;
@@ -276,7 +277,6 @@ class AdminMovieController extends Controller
             $movie->setYearOfProduction($yearOfProduction);
 
             $movie->setRuntime($request->request->get('runtime'));
-            $movie->setCountry($request->request->get('country'));
             $movie->setImdbRating($request->request->get('imdbRating'));
 
             // remove thousands separator and other separators
@@ -321,6 +321,53 @@ class AdminMovieController extends Controller
             $movie->addPoster($poster);
             $poster->setMovie($movie);
 
+
+            /**
+             * ADD COUNTRIES OF PRODUCTION
+             */
+
+            /**
+             * Array of countries names from form
+             */
+            $countriesNamesFromApi = $request->request->get('countries');
+            $countriesNamesFromApi = explode(',', $countriesNamesFromApi);
+
+            foreach ($countriesNamesFromApi as $key => $value) {
+                $countriesNamesFromApi[$key] = trim(strtolower($value));
+            }
+
+            /**
+             * Get existing country or create new one and add it to an array
+             */
+            $countriesOfProduction = [];
+
+            foreach ($countriesNamesFromApi as $countryNameFromApi) {
+
+                $countryOfProduction = $this
+                    ->getDoctrine()
+                    ->getRepository('AppBundle:CountryOfProduction')->findOneBy([
+                        'name' => $countryNameFromApi
+                    ]);
+
+                if (!$countryOfProduction) {
+                    $countryOfProduction = new CountryOfProduction();
+                    $countryOfProduction->setName($countryNameFromApi);
+
+                    $em->persist($countryOfProduction);
+                }
+
+                $countriesOfProduction[] = $countryOfProduction;
+            }
+
+            /**
+             * Add countries to movie
+             */
+            foreach ($countriesOfProduction as $countryOfProduction) {
+                $movie->addCountryOfProduction($countryOfProduction);
+                $countryOfProduction->addMovie($movie);
+            }
+
+
             /**
              * ADD GENRES
              */
@@ -336,7 +383,7 @@ class AdminMovieController extends Controller
             }
 
             /**
-             * Get existing genre or create new one and add to an array
+             * Get existing genre or create new one and add it to an array
              */
             $imdbGenres = [];
 
@@ -365,6 +412,7 @@ class AdminMovieController extends Controller
                 $movie->addImdbGenre($imdbGenre);
                 $imdbGenre->addMovie($movie);
             }
+
 
             /**
              * ADD CAST

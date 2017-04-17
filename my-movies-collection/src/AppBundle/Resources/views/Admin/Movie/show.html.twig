@@ -13,7 +13,14 @@
 
     <p>age category: {{ movie.ageCategory.name }}</p>
     <p>runtime: {{ movie.runtime }}</p>
-    <p>country: {{ movie.country }}</p>
+    <p>
+        country:
+        {% for country in movie.countriesOfProduction %}
+            <a href="#">{{ country.name }}</a>{{ loop.last ? '' : ', ' }}
+        {% else %}
+            <p>no countries</p>
+        {% endfor %}
+    </p>
     <p>imdb rating: {{ movie.imdbRating }}</p>
     <p>imdb votes: {{ movie.imdbVotes }}</p>
     <p>imdb id: {{ movie.imdbId }}</p>
