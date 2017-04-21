@@ -1,0 +1,37 @@
+{% extends '::base.html.twig' %}
+
+{% block body %}
+
+    <div class="container">
+        {# sorting of properties based on query components #}
+        <p>Sort by:
+            <span {% if pagination.isSorted('m.title') %}class="sorted"{% endif %}>
+                {{ knp_pagination_sortable(pagination, 'title', 'm.title') }}
+            </span>
+            <span {% if pagination.isSorted('m.yearOfProduction') %}class="sorted"{% endif %}>
+                {{ knp_pagination_sortable(pagination, 'year', ['m.yearOfProduction']) }}
+            </span>
+        </p>
+
+        <div class="movie-tiles">
+            {% for movie in pagination %}
+                <div class="movie-tile">
+                    <a href="{{ path('app_movie_showmoviedetails', {'movieId': movie.id}) }}">
+                        {% for poster in movie.posters %}
+                            <img src="{{ vich_uploader_asset(poster, 'file') }}" alt="{{ movie.title }} poster"/>
+                        {% endfor %}
+                    </a>
+                    {{ movie.title }} ({{ movie.yearOfProduction }})
+                </div>
+            {% else %}
+                <p>No movie found</p>
+            {% endfor %}
+        </div>
+
+        {# display navigation #}
+        <div class="navigation">
+            {{ knp_pagination_render(pagination) }}
+        </div>
+    </div>
+
+{% endblock %}

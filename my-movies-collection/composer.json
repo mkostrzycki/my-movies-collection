@@ -22,6 +22,7 @@
         "doctrine/orm": "^2.4.8",
         "eightpoints/guzzle-bundle": "^5.3",
         "incenteev/composer-parameter-handler": "~2.0",
+        "knplabs/knp-paginator-bundle": "^2.5",
         "sensio/distribution-bundle": "~4.0",
         "sensio/framework-extra-bundle": "^3.0.2",
         "symfony/assetic-bundle": "~2.3",

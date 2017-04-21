@@ -5,6 +5,7 @@ namespace AppBundle\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use Symfony\Component\HttpFoundation\Request;
 
 /**
  * @Route("/movie")
@@ -24,6 +25,34 @@ class MovieController extends Controller
 
         return [
             'movies' => $movies
+        ];
+    }
+
+    /**
+     * @Route("/pagination")
+     * @Template("AppBundle:Front/Movie:paginationTest.html.twig")
+     * @param Request $request
+     * @return array
+     */
+    public function paginationTestAction(Request $request)
+    {
+        $em = $this
+            ->getDoctrine()
+            ->getManager();
+
+        $dql = "SELECT m FROM AppBundle:Movie m";
+        $query = $em->createQuery($dql);
+
+        $paginator = $this->get('knp_paginator');
+
+        $pagination = $paginator->paginate(
+            $query,
+            $request->query->getInt('page', 1),
+            12
+        );
+
+        return [
+            'pagination' => $pagination
         ];
     }
 
